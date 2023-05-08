@@ -3,12 +3,17 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { CreateUserDTO } from "./dto/create-user.dto";
 import { UpdatePutUserDTO } from "./dto/update-put-user.dto";
 import { UpdatePatchUserDTO } from "./dto/update-patch-user.dto";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create({ email, name, password, birthAt }: CreateUserDTO) {
+    const salt = await bcrypt.genSalt();
+
+    password = await bcrypt.hash(password, salt);
+
     return this.prisma.user.create({ data: { email, name, password, birthAt: birthAt ? new Date(birthAt) : null } });
   }
 
@@ -23,17 +28,24 @@ export class UserService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  async update(id: number, { email, name, password, birthAt }: UpdatePutUserDTO) {
+  async update(id: number, { email, name, password, birthAt, role }: UpdatePutUserDTO) {
     await this.checkIfExists(id);
 
+    const salt = await bcrypt.genSalt();
+
+    password = await bcrypt.hash(password, salt);
+
     return this.prisma.user.update({
-      data: { email, name, password, birthAt: birthAt ? new Date(birthAt) : null },
+      data: { email, name, password, birthAt: birthAt ? new Date(birthAt) : null, role },
       where: { id }
     });
   }
 
-  async updatePartial(id: number, { email, name, password, birthAt }: UpdatePatchUserDTO) {
+  async updatePartial(id: number, { email, name, password, birthAt, role }: UpdatePatchUserDTO) {
     await this.checkIfExists(id);
+
+    const salt = await bcrypt.genSalt();
+    password = await bcrypt.hash(password, salt);
 
     const data: any = {};
 
@@ -53,6 +65,10 @@ export class UserService {
       data.password = password;
     }
 
+    if (role) {
+      data.role = role;
+    }
+
     return this.prisma.user.update({ data, where: { id } })
   }
 
@@ -68,4 +84,6 @@ export class UserService {
       throw new NotFoundException(`User ID: ${id} does not exist!`);
     }
   }
+
+
 }

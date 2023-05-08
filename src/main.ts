@@ -6,6 +6,8 @@ import { LogInterceptor } from './interceptors/log.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors();
+
   app.useGlobalPipes(new ValidationPipe()); // To use class validation pipe
 
   app.useGlobalInterceptors(new LogInterceptor());
