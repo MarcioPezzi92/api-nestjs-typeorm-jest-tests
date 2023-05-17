@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
-import { UserService } from "src/user/user.service";
 import * as bcrypt from "bcrypt";
 import { MailerService } from "@nestjs-modules/mailer";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserEntity } from "src/user/entity/user.entity";
 import { Repository } from "typeorm";
+import { UserService } from "../user/user.service";
+import { UserEntity } from "../user/entity/user.entity";
 
 @Injectable()
 export class AuthService {
@@ -22,7 +22,7 @@ export class AuthService {
     private usersRepository: Repository<UserEntity>
   ) { }
 
-  async createToken(user: UserEntity) {
+  createToken(user: UserEntity) {
     return {
       accessToken: this.jwtService.sign(
         {
@@ -62,11 +62,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    const user = await this.usersRepository.findOne({
-      where: {
-        email
-      }
-    })
+    const user = await this.usersRepository.findOneBy({email});
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado!');
@@ -95,6 +91,8 @@ export class AuthService {
       issuer: 'forget',
       audience: 'users'
     });
+
+    console.log(token);
 
     await this.mailer.sendMail({
       subject: "Recuperação de senha",
@@ -134,8 +132,12 @@ export class AuthService {
   }
 
   async register(data: AuthRegisterDTO) {
+
+    // Prevents a malicious user from passing 'Role': admin
+    delete data.role;
+
     const user = await this.userService.create(data);
 
-    // return this.createToken(user);
+    return this.createToken(user);
   }
 }

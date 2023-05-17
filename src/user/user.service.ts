@@ -26,7 +26,7 @@ export class UserService {
 
     const user = this.usersRepository.create(data);
 
-    return this.usersRepository.save([user]);  
+    return this.usersRepository.save(user);  
   }
 
   async getAll() {
