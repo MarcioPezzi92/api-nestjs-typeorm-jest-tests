@@ -63,26 +63,24 @@ export class UserService {
   async updatePartial(id: number, { email, name, password, birthAt, role }: UpdatePatchUserDTO) {
 
     await this.checkIfExists(id);
-
-    const salt = await bcrypt.genSalt();
-    password = await bcrypt.hash(password, salt);
-
+    
     const data: any = {};
-
+    
     if (birthAt) {
       data.birthAt = new Date(birthAt);
     }
-
+    
     if (email) {
       data.email = email;
     }
-
+    
     if (name) {
       data.name = name;
     }
-
+    
     if (password) {
-      data.password = password;
+      const salt = await bcrypt.genSalt();
+      data.password = await bcrypt.hash(password, salt);
     }
 
     if (role) {
@@ -98,7 +96,7 @@ export class UserService {
 
     await this.checkIfExists(id);
 
-    return this.usersRepository.delete(id);
+    return true;
   }
 
   async checkIfExists(id: number) {
