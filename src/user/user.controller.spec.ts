@@ -1,30 +1,29 @@
-import { Test, TestingModule } from "@nestjs/testing"
-import { UserController } from "./user.controller"
-import { userServiceMock } from "../testing/user-service.mock";
-import { AuthGuard } from "../guards/auth.guard";
-import { guardMock } from "../testing/guard.mock";
-import { RoleGuard } from "../guards/role.guard";
-import { UserService } from "./user.service";
-import { createUserDTOMock } from "../testing/create-user-dto.mock";
-import { userEntityList } from "../testing/user-entity-list.mock";
-import { updatePutUserDTOMock } from "../testing/update-put-user-dto.mock";
-import { updatePatchUserDTOMock } from "../testing/update-patch-user-dto.mock";
+import { Test, TestingModule } from '@nestjs/testing';
+import { UserController } from './user.controller';
+import { userServiceMock } from '../testing/user-service.mock';
+import { AuthGuard } from '../guards/auth.guard';
+import { guardMock } from '../testing/guard.mock';
+import { RoleGuard } from '../guards/role.guard';
+import { UserService } from './user.service';
+import { createUserDTOMock } from '../testing/create-user-dto.mock';
+import { userEntityList } from '../testing/user-entity-list.mock';
+import { updatePutUserDTOMock } from '../testing/update-put-user-dto.mock';
+import { updatePatchUserDTOMock } from '../testing/update-patch-user-dto.mock';
 
 describe('UserController', () => {
-
   let userController: UserController;
   let userService: UserService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-      providers: [userServiceMock]
+      providers: [userServiceMock],
     })
-    .overrideGuard(AuthGuard)
-    .useValue(guardMock)
-    .overrideGuard(RoleGuard)
-    .useValue(guardMock)
-    .compile();
+      .overrideGuard(AuthGuard)
+      .useValue(guardMock)
+      .overrideGuard(RoleGuard)
+      .useValue(guardMock)
+      .compile();
 
     userController = module.get<UserController>(UserController);
     userService = module.get<UserService>(UserService);
@@ -42,7 +41,7 @@ describe('UserController', () => {
       expect(guards.length).toEqual(2);
       expect(new guards[0]()).toBeInstanceOf(AuthGuard);
       expect(new guards[1]()).toBeInstanceOf(RoleGuard);
-    })
+    });
   });
 
   describe('Create', () => {
@@ -52,14 +51,14 @@ describe('UserController', () => {
       expect(result).toEqual(userEntityList[0]);
     });
   });
-  
+
   describe('Read', () => {
     test('get all method', async () => {
       const result = await userController.getAll();
 
       expect(result).toEqual(userEntityList);
     });
-    
+
     test('get one method', async () => {
       const result = await userController.getOne(1);
 
@@ -68,15 +67,17 @@ describe('UserController', () => {
   });
 
   describe('Update', () => {
-
     test('update method', async () => {
       const result = await userController.update(updatePutUserDTOMock, 1);
 
       expect(result).toEqual(userEntityList[0]);
     });
-    
+
     test('update partial method', async () => {
-      const result = await userController.updatePartial(updatePatchUserDTOMock, 1);
+      const result = await userController.updatePartial(
+        updatePatchUserDTOMock,
+        1,
+      );
 
       expect(result).toEqual(userEntityList[0]);
     });
@@ -89,5 +90,4 @@ describe('UserController', () => {
       expect(result).toEqual({ success: true });
     });
   });
-
 });

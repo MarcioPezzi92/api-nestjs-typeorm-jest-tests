@@ -1,5 +1,5 @@
-import { Role } from "../enums/role.enum";
-import { UserEntity } from "../user/entity/user.entity";
+import { Role } from '../enums/role.enum';
+import { UserEntity } from '../user/entity/user.entity';
 
 export const userEntityList: UserEntity[] = [
   {
@@ -10,7 +10,7 @@ export const userEntityList: UserEntity[] = [
     password: '$2b$10$09wWoXNUKHPFjJzm1VIjY.ae9J1ecD8ie0y27VbBZHLaHBDpK7fVC',
     role: Role.Admin,
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   },
   {
     id: 2,
@@ -20,7 +20,7 @@ export const userEntityList: UserEntity[] = [
     password: '$2b$10$09wWoXNUKHPFjJzm1VIjY.ae9J1ecD8ie0y27VbBZHLaHBDpK7fVC',
     role: Role.User,
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   },
   {
     id: 3,
@@ -30,6 +30,6 @@ export const userEntityList: UserEntity[] = [
     password: '$2b$10$09wWoXNUKHPFjJzm1VIjY.ae9J1ecD8ie0y27VbBZHLaHBDpK7fVC',
     role: Role.Admin,
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   },
-]
+];

@@ -1,9 +1,10 @@
-import { join } from "path"
-import { getFileToBuffer } from "./get-file-to-buffer"
+import { join } from 'path';
+import { getFileToBuffer } from './get-file-to-buffer';
 
 export const getPhoto = async () => {
-
-  const {buffer, stream} = await getFileToBuffer(join(__dirname, 'photo.png'));
+  const { buffer, stream } = await getFileToBuffer(
+    join(__dirname, 'photo.png'),
+  );
 
   const photo: Express.Multer.File = {
     fieldname: 'Photo',
@@ -16,7 +17,7 @@ export const getPhoto = async () => {
     filename: 'file-name',
     path: 'file-path',
     buffer,
-  }
+  };
 
   return photo;
-}
+};

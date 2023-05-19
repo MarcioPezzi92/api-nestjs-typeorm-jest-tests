@@ -11,7 +11,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -24,7 +24,9 @@
     "typeorm:ts": "typeorm-ts-node-esm",
     "migrate:create": "npm run typeorm:ts migration:create -- ./typeorm/migrations/Migrate",
     "migrate:up": "npm run typeorm:ts migration:run -- -d ./typeorm/data-source.ts",
-    "migrate:down": "npm run typeorm:ts migration:revert -- -d ./typeorm/data-source.ts"
+    "migrate:down": "npm run typeorm:ts migration:revert -- -d ./typeorm/data-source.ts",
+    "preprod": "npm run format && npm run lint && npm test && npm run test:e2e",
+    "prod": "npm run build"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.8.1",

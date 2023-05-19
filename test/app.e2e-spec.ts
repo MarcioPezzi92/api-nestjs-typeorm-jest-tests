@@ -22,7 +22,7 @@ describe('AppController (e2e)', () => {
 
   afterEach(() => {
     app.close();
-  })
+  });
 
   it('/ (GET)', () => {
     return request(app.getHttpServer())
@@ -30,22 +30,22 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect('Hello World!');
   });
-  
+
   it('Registrar um novo usuário', async () => {
     const response = await request(app.getHttpServer())
       .post('/auth/register')
-      .send(authRegisterDTOMock)
+      .send(authRegisterDTOMock);
 
     expect(response.statusCode).toEqual(201);
     expect(typeof response.body.accessToken).toEqual('string');
   });
-  
+
   it('Tentar logar o novo usuário', async () => {
     const response = await request(app.getHttpServer())
       .post('/auth/login')
       .send({
         email: authRegisterDTOMock.email,
-        password: authRegisterDTOMock.password
+        password: authRegisterDTOMock.password,
       });
 
     expect(response.statusCode).toEqual(201);
@@ -53,12 +53,12 @@ describe('AppController (e2e)', () => {
 
     accessToken = response.body.accessToken;
   });
-  
+
   it('Obter os dados do usuário logado', async () => {
     const response = await request(app.getHttpServer())
       .post('/auth/me')
       .set('Authorization', `bearer ${accessToken}`)
-      .send()
+      .send();
 
     expect(response.statusCode).toEqual(201);
     expect(typeof response.body.id).toEqual('number');
@@ -68,7 +68,11 @@ describe('AppController (e2e)', () => {
   it('Registrar um novo usuário como administrador', async () => {
     const response = await request(app.getHttpServer())
       .post('/auth/register')
-      .send({...authRegisterDTOMock, role: Role.Admin, email: 'carlosmagno@email.com'});
+      .send({
+        ...authRegisterDTOMock,
+        role: Role.Admin,
+        email: 'carlosmagno@email.com',
+      });
 
     expect(response.statusCode).toEqual(201);
     expect(typeof response.body.accessToken).toEqual('string');
@@ -80,7 +84,7 @@ describe('AppController (e2e)', () => {
     const response = await request(app.getHttpServer())
       .post('/auth/me')
       .set('Authorization', `bearer ${accessToken}`)
-      .send()
+      .send();
 
     expect(response.statusCode).toEqual(201);
     expect(typeof response.body.id).toEqual('number');
@@ -94,24 +98,27 @@ describe('AppController (e2e)', () => {
 
     const queryRunner = ds.createQueryRunner();
 
-    await queryRunner.query(`UPDATE users SET role = ${Role.Admin} WHERE id = ${userId};`);
+    await queryRunner.query(
+      `UPDATE users SET role = ${Role.Admin} WHERE id = ${userId};`,
+    );
 
-    const rows = await queryRunner.query(`SELECT * FROM users WHERE id = ${userId};`);
-    
+    const rows = await queryRunner.query(
+      `SELECT * FROM users WHERE id = ${userId};`,
+    );
+
     dataSource.destroy();
 
     expect(rows.length).toEqual(1);
     expect(rows[0].role).toEqual(Role.Admin);
   });
-  
+
   it('Tentar ver a lista de todos os usuários, agora com acesso', async () => {
     const response = await request(app.getHttpServer())
       .get('/users')
       .set('Authorization', `bearer ${accessToken}`)
-      .send()
+      .send();
 
     expect(response.statusCode).toEqual(200);
     expect(response.body.length).toEqual(2);
   });
-
 });

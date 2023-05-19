@@ -1,20 +1,16 @@
-import { Test, TestingModule } from "@nestjs/testing"
-import { FileService } from "./file.service"
-import { getPhoto } from "../testing/get-photo.mock";
+import { Test, TestingModule } from '@nestjs/testing';
+import { FileService } from './file.service';
+import { getPhoto } from '../testing/get-photo.mock';
 
 describe('FileService', () => {
-
   let fileService: FileService;
 
-  let file: Express.Multer.File
-
-  beforeEach( async () => {
+  beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [FileService]
+      providers: [FileService],
     }).compile();
 
     fileService = module.get<FileService>(FileService);
-
   });
 
   test('Validar a definição', () => {
@@ -22,13 +18,10 @@ describe('FileService', () => {
   });
 
   describe('Teste do File Service', () => {
-
     test('upload method', async () => {
       const photo = await getPhoto();
       const filename = 'photo-test.png';
       fileService.upload(photo, filename);
     });
-
   });
-
-})
+});
